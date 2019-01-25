@@ -3,20 +3,22 @@ import datetime
 now = datetime.datetime.now()
 
 
-def my_decorator(function_to_decorate):
-    def cover_function(*args, start='', max_line=0, in_file=False):
-        log_string = ''
-        with open('log.txt', 'a', encoding='utf8') as log:
-            log_string += f'{now.strftime("%d-%m-%Y %H:%M:%S")} | Имя функции: {function_to_decorate.__name__} | ' \
-                      f'Переданные аргументы: {args} {start} {max_line} {in_file}| Результат: '
-            result_string = str(function_to_decorate(*args, start='', max_line=0, in_file=False))
-            log_string += result_string + '\n'
-            log.write(log_string)
+def decorator_maker(path):
+    def my_decorator(function_to_decorate):
+        def cover_function(*args, **kwargs):
+            log_string = ''
+            with open(path, 'a', encoding='utf8') as log:
+                log_string += f'{now.strftime("%d-%m-%Y %H:%M:%S")} | Имя функции: {function_to_decorate.__name__} | ' \
+                          f'Переданные аргументы: {args} {kwargs} | Результат: \n'
+                result_string = function_to_decorate(*args, **kwargs)
+                log_string += result_string + '\n'
+                log.write(log_string)
+        return cover_function
 
-    return cover_function
+    return my_decorator
 
 
-@my_decorator
+@decorator_maker('log.txt')
 def adv_print(*args, start='', max_line=0, in_file=False):
     result = str(start)
     result_sep = ''
@@ -36,13 +38,7 @@ def adv_print(*args, start='', max_line=0, in_file=False):
         return result
 
 
-
-
-
-
-
-
-adv_print(31531 + 153, '111111111111111', start='----',max_line=5, in_file=True)
+adv_print(31153, '1111111111', start='*', max_line=5, in_file=True)
 
 
 

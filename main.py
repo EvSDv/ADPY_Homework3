@@ -4,12 +4,12 @@ now = datetime.datetime.now()
 
 
 def my_decorator(function_to_decorate):
-    def cover_function(*args):
+    def cover_function(*args, start='', max_line=0, in_file=False):
         log_string = ''
         with open('log.txt', 'a', encoding='utf8') as log:
             log_string += f'{now.strftime("%d-%m-%Y %H:%M:%S")} | Имя функции: {function_to_decorate.__name__} | ' \
-                      f'Переданные аргументы: {args} | Результат: '
-            result_string = str(function_to_decorate(*args))
+                      f'Переданные аргументы: {args} {start} {max_line} {in_file}| Результат: '
+            result_string = str(function_to_decorate(*args, start='', max_line=0, in_file=False))
             log_string += result_string + '\n'
             log.write(log_string)
 
@@ -17,15 +17,32 @@ def my_decorator(function_to_decorate):
 
 
 @my_decorator
-def test_function(*args):
-    a = ''
-    for i in args:
-        a += i
+def adv_print(*args, start='', max_line=0, in_file=False):
+    result = str(start)
+    result_sep = ''
+    for value in args:
+        result += str(value)
 
-    return a
+    if max_line > 0 and len(result) > max_line:
+        for symbol in range(0, len(result), max_line):
+            result_sep += result[symbol:symbol + max_line] + '\n'
+        result = result_sep
+
+    if in_file:
+        with open('result.txt', 'w', encoding='utf8') as file:
+            file.write(result)
+        return result
+    else:
+        return result
 
 
-test_function('Тестовый ввод', 'asdas')
+
+
+
+
+
+
+adv_print(31531 + 153, '111111111111111', start='----',max_line=5, in_file=True)
 
 
 

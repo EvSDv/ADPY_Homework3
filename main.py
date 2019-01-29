@@ -1,11 +1,9 @@
 import datetime
 
-now = datetime.datetime.now()
-
-
 def decorator_maker(path):
     def my_decorator(function_to_decorate):
         def cover_function(*args, **kwargs):
+            now = datetime.datetime.now()
             log_string = ''
             with open(path, 'a', encoding='utf8') as log:
                 log_string += f'{now.strftime("%d-%m-%Y %H:%M:%S")} | Имя функции: {function_to_decorate.__name__} | ' \
